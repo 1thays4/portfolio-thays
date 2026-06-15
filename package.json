@@ -1,8 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "deploy": "wrangler deploy",
-    "preview": "wrangler dev"
+    "deploy": "npx wrangler pages deploy dist --branch main",
+    "preview": "npx wrangler pages dev dist",
+    "build": "node build.js"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
