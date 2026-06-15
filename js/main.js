@@ -92,12 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Contact form handling
+    // Contact form handling - envia para o Formspree de verdade
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
             const inputs = contactForm.querySelectorAll('input, textarea');
             let isValid = true;
             
@@ -110,22 +108,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            if (isValid) {
-                // Simulate form submission
-                const submitBtn = contactForm.querySelector('.submit-btn');
-                const originalText = submitBtn.textContent;
-                submitBtn.textContent = 'Enviando...';
-                submitBtn.disabled = true;
-
-                setTimeout(() => {
-                    alert('Mensagem enviada com sucesso! Entrarei em contato em breve.');
-                    contactForm.reset();
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                }, 1500);
-            } else {
+            if (!isValid) {
+                e.preventDefault();
                 alert('Por favor, preencha todos os campos.');
+                return;
             }
+
+            // Se for válido, deixa o formulário enviar normalmente para o Formspree
+            const submitBtn = contactForm.querySelector('.submit-btn');
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+            
+            // O formulário tem action="https://formspree.io/f/mqejzwjv" e method="POST"
+            // então o navegador fará o submit real para o Formspree
         });
 
         // Remove error styling on input
@@ -134,25 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.style.borderColor = '#333333';
             });
         });
-    }
-
-    // Typing effect for hero title (optional enhancement)
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const originalText = heroTitle.textContent;
-        heroTitle.textContent = '';
-        let index = 0;
-
-        function typeWriter() {
-            if (index < originalText.length) {
-                heroTitle.textContent += originalText.charAt(index);
-                index++;
-                setTimeout(typeWriter, 50);
-            }
-        }
-
-        // Start typing effect after a short delay
-        setTimeout(typeWriter, 500);
     }
 
     // Parallax effect for hero shape
@@ -164,28 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
             heroShape.style.transform = `translate(${x}px, ${y}px)`;
         });
     }
-
-    // Active nav link based on scroll position (for single page)
-    const sections = document.querySelectorAll('section[id]');
-    const navLinksList = document.querySelectorAll('.nav-link');
-
-    window.addEventListener('scroll', () => {
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (window.pageYOffset >= sectionTop - 200) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinksList.forEach(link => {
-            link.style.color = '';
-            if (link.getAttribute('href') === `#${current}`) {
-                link.style.color = '#6366f1';
-            }
-        });
-    });
 
     // Add active class to current page nav link
     const currentPage = window.location.pathname.split('/').pop();
